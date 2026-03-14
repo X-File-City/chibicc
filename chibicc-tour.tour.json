@@ -1,7 +1,7 @@
 {
   "id": "chibicc-compiler-tour",
   "title": "Chibicc: A Small C Compiler",
-  "description": "Explore the architecture of chibicc, an educational C compiler that follows a clean pipeline from source code to x86-64 assembly. Walk through each compilation stage and understand how ~8,500 lines of C implement a surprisingly complete C11 compiler.",
+  "description": "Explore the architecture of chibicc, an educational C compiler that follows a clean pipeline from source code to x86-64 assembly. Walk through each compilation stage and understand how 8,500 lines of C implement a surprisingly complete C11 compiler.",
   "version": "1.0.0",
   "audience": "Engineers & Compiler Enthusiasts",
   "prerequisites": [
@@ -12,7 +12,7 @@
     {
       "id": "step-1-welcome",
       "title": "Welcome to Chibicc",
-      "description": "Chibicc is a small but capable C11 compiler written by Rui Ueyama. Despite being only ~8,500 lines of C, it can compile real-world projects like Git and SQLite. Notice the flat project structure — all core compiler source files live at the repository root, with test/ for the test suite and include/ for standard C headers.",
+      "description": "Chibicc is a small but capable C11 compiler written by Rui Ueyama. Despite being only 8,500 lines of C, it can compile real-world projects like Git and SQLite. Notice the flat project structure — all core compiler source files live at the repository root, with test/ for the test suite and include/ for standard C headers.",
       "estimatedTime": 60,
       "focusDirectory": "",
       "colorMode": "fileTypes"
@@ -219,7 +219,7 @@
     {
       "id": "step-8-full-picture",
       "title": "The Complete Compiler Pipeline",
-      "description": "You've now seen the full chibicc compilation pipeline: Source Code → tokenize.c (lexing) → preprocess.c (macros) → parse.c (AST) → type.c (type checking) → codegen.c (x86-64 assembly) → external assembler & linker → executable. All orchestrated by main.c, glued together by chibicc.h, and verified by 50+ test files. This ~8,500 line compiler proves that a C compiler doesn't need to be millions of lines — just well-structured ones.",
+      "description": "You've now seen the full chibicc compilation pipeline: Source Code → tokenize.c (lexing) → preprocess.c (macros) → parse.c (AST) → type.c (type checking) → codegen.c (x86-64 assembly) → external assembler & linker → executable. All orchestrated by main.c, glued together by chibicc.h, and verified by 50+ test files. This 8,500 line compiler proves that a C compiler doesn't need to be millions of lines — just well-structured ones.",
       "estimatedTime": 60,
       "focusDirectory": "",
       "highlightLayers": [
