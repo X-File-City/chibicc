@@ -1,0 +1,282 @@
+{
+  "id": "chibicc-compiler-tour",
+  "title": "Chibicc: A Small C Compiler",
+  "description": "Explore the architecture of chibicc, an educational C compiler that follows a clean pipeline from source code to x86-64 assembly. Walk through each compilation stage and understand how ~8,500 lines of C implement a surprisingly complete C11 compiler.",
+  "version": "1.0.0",
+  "audience": "Engineers & Compiler Enthusiasts",
+  "prerequisites": [
+    "Basic understanding of C programming",
+    "Familiarity with compilation concepts (lexing, parsing, code generation)"
+  ],
+  "steps": [
+    {
+      "id": "step-1-welcome",
+      "title": "Welcome to Chibicc",
+      "description": "Chibicc is a small but capable C11 compiler written by Rui Ueyama. Despite being only ~8,500 lines of C, it can compile real-world projects like Git and SQLite. Notice the flat project structure — all core compiler source files live at the repository root, with test/ for the test suite and include/ for standard C headers.",
+      "estimatedTime": 60,
+      "focusDirectory": "",
+      "colorMode": "fileTypes"
+    },
+    {
+      "id": "step-2-central-header",
+      "title": "The Central Header: chibicc.h",
+      "description": "Everything connects through chibicc.h — the single header file that defines all data structures and function interfaces. It declares Token (lexer output), Node (AST nodes with 25+ kinds), Type (the type system), and Obj (variables and functions). Every .c file includes this header. This flat, no-abstraction design makes the compiler easy to read and modify.",
+      "estimatedTime": 90,
+      "focusDirectory": "",
+      "highlightLayers": [
+        {
+          "id": "central-header",
+          "name": "Central Header",
+          "color": "#f59e0b",
+          "items": [
+            { "path": "chibicc.h", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "borderWidth": 3,
+          "renderStrategy": "border"
+        }
+      ],
+      "colorMode": "fileTypes"
+    },
+    {
+      "id": "step-3-frontend",
+      "title": "Frontend: Tokenizer & Preprocessor",
+      "description": "The compilation pipeline starts here. tokenize.c (805 lines) performs lexical analysis — converting raw source text into a linked list of Token structs. It handles identifiers, keywords, numbers, strings, and UTF-8. Then preprocess.c (1,208 lines) expands macros, processes #include/#ifdef/#if directives, and uses a hideset algorithm to prevent infinite macro recursion. Together they transform C source into a clean token stream ready for parsing.",
+      "estimatedTime": 120,
+      "focusDirectory": "",
+      "highlightLayers": [
+        {
+          "id": "tokenizer",
+          "name": "Tokenizer",
+          "color": "#3b82f6",
+          "items": [
+            { "path": "tokenize.c", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "borderWidth": 2,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "preprocessor",
+          "name": "Preprocessor",
+          "color": "#8b5cf6",
+          "items": [
+            { "path": "preprocess.c", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "borderWidth": 2,
+          "renderStrategy": "border"
+        }
+      ],
+      "colorMode": "fileTypes",
+      "interactiveActions": [
+        {
+          "type": "click-file",
+          "description": "Open tokenize.c to see lexical analysis",
+          "target": "tokenize.c"
+        },
+        {
+          "type": "click-file",
+          "description": "Open preprocess.c to see macro expansion",
+          "target": "preprocess.c"
+        }
+      ]
+    },
+    {
+      "id": "step-4-parser",
+      "title": "The Parser: Heart of the Compiler",
+      "description": "parse.c is the largest file at 3,368 lines — and for good reason. This recursive descent parser implements nearly the entire C11 grammar. It converts the token stream into an Abstract Syntax Tree (AST), manages nested scopes for variables and types, handles complex features like designated initializers and variable-length arrays, and performs semantic analysis along the way. The parser is where C's notoriously complex grammar meets elegant, readable code.",
+      "estimatedTime": 120,
+      "focusDirectory": "",
+      "highlightLayers": [
+        {
+          "id": "parser",
+          "name": "Parser",
+          "color": "#ef4444",
+          "items": [
+            { "path": "parse.c", "type": "file" }
+          ],
+          "opacity": 0.8,
+          "borderWidth": 3,
+          "renderStrategy": "border"
+        }
+      ],
+      "colorMode": "fileTypes",
+      "interactiveActions": [
+        {
+          "type": "click-file",
+          "description": "Open parse.c to explore the recursive descent parser",
+          "target": "parse.c"
+        }
+      ]
+    },
+    {
+      "id": "step-5-types-and-codegen",
+      "title": "Type System & Code Generation",
+      "description": "type.c (307 lines) implements the C type system — creating pointer, array, struct, and function types, checking compatibility, and performing implicit conversions like usual arithmetic promotions. codegen.c (1,595 lines) walks the typed AST and emits x86-64 assembly, handling stack frames, register allocation following the System V AMD64 ABI, floating-point operations via XMM registers, and struct return values. These two files complete the pipeline from AST to assembly.",
+      "estimatedTime": 120,
+      "focusDirectory": "",
+      "highlightLayers": [
+        {
+          "id": "type-system",
+          "name": "Type System",
+          "color": "#10b981",
+          "items": [
+            { "path": "type.c", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "borderWidth": 2,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "code-generator",
+          "name": "Code Generator",
+          "color": "#f97316",
+          "items": [
+            { "path": "codegen.c", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "borderWidth": 2,
+          "renderStrategy": "border"
+        }
+      ],
+      "colorMode": "fileTypes",
+      "interactiveActions": [
+        {
+          "type": "click-file",
+          "description": "Open type.c to see type checking",
+          "target": "type.c"
+        },
+        {
+          "type": "click-file",
+          "description": "Open codegen.c to see assembly generation",
+          "target": "codegen.c"
+        }
+      ]
+    },
+    {
+      "id": "step-6-driver-and-utilities",
+      "title": "Driver & Supporting Infrastructure",
+      "description": "main.c (791 lines) is the compiler driver — it parses command-line flags (-o, -I, -D, -E, -c, -S), orchestrates the full pipeline, and invokes the external assembler and linker. Supporting utilities keep things simple: hashmap.c provides an open-addressing hash table used for macro lookups and variable scopes, unicode.c handles UTF-8 encoding and Unicode identifier classification, and strings.c manages dynamic string arrays. The Makefile ties it all together with a two-stage build that tests self-hosting.",
+      "estimatedTime": 90,
+      "focusDirectory": "",
+      "highlightLayers": [
+        {
+          "id": "driver",
+          "name": "Compiler Driver",
+          "color": "#06b6d4",
+          "items": [
+            { "path": "main.c", "type": "file" },
+            { "path": "Makefile", "type": "file" }
+          ],
+          "opacity": 0.7,
+          "borderWidth": 2,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "utilities",
+          "name": "Utilities",
+          "color": "#a855f7",
+          "items": [
+            { "path": "hashmap.c", "type": "file" },
+            { "path": "unicode.c", "type": "file" },
+            { "path": "strings.c", "type": "file" }
+          ],
+          "opacity": 0.6,
+          "borderWidth": 2,
+          "renderStrategy": "border"
+        }
+      ],
+      "colorMode": "fileTypes"
+    },
+    {
+      "id": "step-7-test-suite",
+      "title": "Test Suite & Standard Headers",
+      "description": "The test/ directory contains 50+ test files organized by C feature — from basic arithmetic and control flow to advanced features like bitfields, atomics, and Unicode identifiers. The test framework uses a simple assertion macro defined in test.h. The Makefile runs a two-stage test: first compiling tests with chibicc, then testing self-hosting by having chibicc compile itself. The include/ directory provides minimal standard C headers (stdarg.h, stdbool.h, stddef.h, etc.) so compiled programs can use standard library features.",
+      "estimatedTime": 90,
+      "focusDirectory": "test",
+      "highlightLayers": [
+        {
+          "id": "test-files",
+          "name": "Test Suite",
+          "color": "#22c55e",
+          "items": [
+            { "path": "test", "type": "directory" }
+          ],
+          "opacity": 0.6,
+          "borderWidth": 2,
+          "renderStrategy": "border"
+        }
+      ],
+      "colorMode": "fileTypes",
+      "interactiveActions": [
+        {
+          "type": "explore",
+          "description": "Browse the test files to see what C features are tested"
+        }
+      ]
+    },
+    {
+      "id": "step-8-full-picture",
+      "title": "The Complete Compiler Pipeline",
+      "description": "You've now seen the full chibicc compilation pipeline: Source Code → tokenize.c (lexing) → preprocess.c (macros) → parse.c (AST) → type.c (type checking) → codegen.c (x86-64 assembly) → external assembler & linker → executable. All orchestrated by main.c, glued together by chibicc.h, and verified by 50+ test files. This ~8,500 line compiler proves that a C compiler doesn't need to be millions of lines — just well-structured ones.",
+      "estimatedTime": 60,
+      "focusDirectory": "",
+      "highlightLayers": [
+        {
+          "id": "pipeline-frontend",
+          "name": "Frontend (Tokenize + Preprocess)",
+          "color": "#3b82f6",
+          "items": [
+            { "path": "tokenize.c", "type": "file" },
+            { "path": "preprocess.c", "type": "file" }
+          ],
+          "opacity": 0.6,
+          "borderWidth": 2,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "pipeline-middle",
+          "name": "Middle (Parse + Type)",
+          "color": "#ef4444",
+          "items": [
+            { "path": "parse.c", "type": "file" },
+            { "path": "type.c", "type": "file" }
+          ],
+          "opacity": 0.6,
+          "borderWidth": 2,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "pipeline-backend",
+          "name": "Backend (Codegen)",
+          "color": "#f97316",
+          "items": [
+            { "path": "codegen.c", "type": "file" }
+          ],
+          "opacity": 0.6,
+          "borderWidth": 2,
+          "renderStrategy": "border"
+        },
+        {
+          "id": "pipeline-driver",
+          "name": "Driver",
+          "color": "#06b6d4",
+          "items": [
+            { "path": "main.c", "type": "file" },
+            { "path": "chibicc.h", "type": "file" }
+          ],
+          "opacity": 0.6,
+          "borderWidth": 2,
+          "renderStrategy": "border"
+        }
+      ],
+      "colorMode": "fileTypes"
+    }
+  ],
+  "metadata": {
+    "author": "Claude",
+    "createdAt": "2026-03-14T00:00:00.000Z",
+    "tags": ["compiler", "c", "architecture", "onboarding", "educational"]
+  }
+}
